@@ -132,7 +132,7 @@ async function main() {
     alert(tokens.id_token)
     document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token),null,'\t');
     document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t');
-    var user_profile = JSON.parse(JSON.stringify(parseJWTPayload(tokens.access_token)));
+    var user_profile = JSON.parse(JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t'));
     document.getElementById("user_profile").innerHTML = user_profile.name;
   });
 
