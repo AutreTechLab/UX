@@ -8,17 +8,6 @@ var appClientId = "330li6cv5m9cg6m0kuuohqjet3";
 var userPoolId = "eu-central-1_LZXd6oFRY";
 var redirectURI = "https://www.autretechlab.cloud/index.html";
 
-//https://atl-ux.s3.eu-central-1.amazonaws.com/mermaid_ide/auth.html?
-//code=4699595b-c628-48c0-bbb7-1d03229c6a2c
-//&state=0000000093425818140000005100055006875
-
-//https://autretechlab.auth.eu-central-1.amazoncognito.com/oauth2/token?
-//grant_type=authorization_code
-//&client_id=3qfmdgmqd367hvq4iuq1o80b3d
-//&code_verifier=3502637000240000000026042760125828008680
-//&redirect_uri=https://atl-ux.s3.eu-central-1.amazonaws.com/mermaid_ide/auth.html
-//&code=0b590f90-e7f6-4333-a372-8e0465861625
-
 //Convert Payload from Base64-URL to JSON
 const decodePayload = payload => {
   const cleanedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
@@ -28,7 +17,7 @@ const decodePayload = payload => {
     return `${acc}%${uriEncodedChar}`
   }, '')
   const jsonPayload = decodeURIComponent(uriEncodedPayload);
-  alert(jsonPayload)
+  console.log(jsonPayload)
   return JSON.parse(jsonPayload)
 }
 
@@ -105,7 +94,7 @@ async function main() {
     console.log("Verify state matches -> code" , code)
     console.log("Verify state matches -> state:" , state)
     if(sessionStorage.getItem("pkce_state") != state) {
-        alert("Invalid state");
+        console.log("Invalid state");
     } else {
 
     // Fetch OAuth2 tokens from Cognito
@@ -124,16 +113,14 @@ async function main() {
     var idVerified = verifyToken (tokens.id_token);
     Promise.resolve(idVerified).then(function(value) {
       if (value.localeCompare("verified")){
-        alert("Invalid ID Token - "+ value);
+        console.log("Invalid ID Token - "+ value);
         return;
       }
       });
     // Display tokens
-    alert(tokens.id_token)
+    console.log(tokens.id_token)
     document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token),null,'\t');
     document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t');
-    var user_profile = JSON.parse(JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t'));
-    document.getElementById("user_profile").innerHTML = user_profile.name;
   });
 
     // Fetch from /user_info
@@ -148,7 +135,9 @@ async function main() {
     })
     .then((data) => {
       // Display user information
-      document.getElementById("userInfo").innerHTML = JSON.stringify(data, null,'\t');
+//      document.getElementById("userInfo").innerHTML = JSON.stringify(data, null,'\t');
+      var user_profile = JSON.parse(JSON.stringify(data, null,'\t'));
+      document.getElementById("userInfo").innerHTML = user_profile.name;
     });
   }}}
   main();
